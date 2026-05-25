@@ -1,3 +1,4 @@
+import os
 import uuid
 from datetime import date
 
@@ -16,9 +17,12 @@ app = FastAPI(
     version="1.2.0",
 )
 
+_origins_env = os.environ.get("ALLOWED_ORIGINS", "*")
+_origins = ["*"] if _origins_env == "*" else [o.strip() for o in _origins_env.split(",")]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
