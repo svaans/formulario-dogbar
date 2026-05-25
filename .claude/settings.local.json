@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\santi\\\\Downloads\\\\MERAKI\\\\db\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\santi\\\\Downloads\\\\MERAKI\\\\backend\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\santi\\\\Downloads\\\\MERAKI\\\\frontend\")"
+    ]
+  }
+}
