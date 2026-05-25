@@ -1,5 +1,6 @@
 import os
 import uuid
+from contextlib import asynccontextmanager
 from datetime import date
 
 from fastapi import FastAPI, Depends, HTTPException, status
@@ -9,12 +10,22 @@ from sqlalchemy.orm import Session
 import models, schemas
 from database import Base, engine, get_db
 
-Base.metadata.create_all(bind=engine)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        Base.metadata.create_all(bind=engine)
+        print("✅ Tablas creadas / verificadas correctamente")
+    except Exception as e:
+        print(f"❌ Error al conectar con la base de datos: {e}")
+    yield
+
 
 app = FastAPI(
     title="Dog Bar Meraki — API",
     description="Sistema de registro de animales para Dog Bar Meraki",
     version="1.2.0",
+    lifespan=lifespan,
 )
 
 _origins_env = os.environ.get("ALLOWED_ORIGINS", "*")
