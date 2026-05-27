@@ -5,7 +5,9 @@ from datetime import date
 
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
+from datetime import date as date_type
+
+from sqlalchemy.orm import Session, selectinload
 
 import models, schemas
 from database import Base, engine, get_db
@@ -129,7 +131,13 @@ def list_animals(db: Session = Depends(get_db)):
 
 @app.get("/animals/{animal_id}", response_model=schemas.AnimalWithHistory, tags=["Animales"])
 def get_animal(animal_id: int, db: Session = Depends(get_db)):
-    animal = db.get(models.Animal, animal_id)
+    animal = db.query(models.Animal)\
+        .options(
+            selectinload(models.Animal.owner),
+            selectinload(models.Animal.visits),
+        )\
+        .filter(models.Animal.id == animal_id)\
+        .first()
     if not animal:
         raise HTTPException(status_code=404, detail="Animal no encontrado")
     return animal
@@ -151,10 +159,16 @@ def create_visit(body: schemas.VisitCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/visits/today", response_model=list[schemas.VisitFull], tags=["Visitas"])
-def visits_today(db: Session = Depends(get_db)):
-    today = date.today()
-    return db.query(models.Visit).filter(models.Visit.entry_date == today)\
-        .order_by(models.Visit.entry_time.desc()).all()
+def visits_today(local_date: date_type | None = None, db: Session = Depends(get_db)):
+    # El frontend envía la fecha local del navegador para evitar desfase UTC vs España
+    today = local_date or date_type.today()
+    return db.query(models.Visit)\
+        .options(
+            selectinload(models.Visit.animal).selectinload(models.Animal.owner)
+        )\
+        .filter(models.Visit.entry_date == today)\
+        .order_by(models.Visit.entry_time.desc())\
+        .all()
 
 
 @app.get("/visits", response_model=list[schemas.VisitOut], tags=["Visitas"])

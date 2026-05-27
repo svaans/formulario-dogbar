@@ -3,154 +3,412 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dog Bar Meraki</title>
+  <title>Meraki Beer Company — Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --brand: #c8692a; --brand-dark: #a04f18;
-      --bg: #fdf8f3; --surface: #ffffff;
-      --border: #e0d5c8; --text: #2d1f0f; --muted: #7a6552;
-      --danger: #c0392b; --success: #27ae60; --radius: 10px;
+      --brand: #C8902A;
+      --brand-dark: #A0701A;
+      --brand-light: #E8B84A;
+      --bg: #0E0503;
+      --surface: #1C0B06;
+      --surface-2: #271109;
+      --border: #3E1A08;
+      --border-gold: #6A4010;
+      --text: #EDD8A0;
+      --text-strong: #F5E8C0;
+      --muted: #8A6A3A;
+      --danger: #C0392B;
+      --danger-bg: #2A0A08;
+      --success: #2E8B57;
+      --success-bg: #0A1E10;
+      --radius: 10px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at top, #2A0E05 0%, transparent 60%),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 58px,
+          rgba(255,255,255,.012) 59px,
+          rgba(255,255,255,.012) 60px
+        );
+    }
 
-    header { background: var(--brand); color: #fff; padding: 1.1rem 2rem; display: flex; align-items: center; gap: 1rem; }
-    header h1 { font-size: 1.3rem; font-weight: 700; }
-    header p  { font-size: .85rem; opacity: .85; }
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      background-image: url('meraki-wood-bg.jpg');
+      background-size: cover;
+      background-position: center 30%;
+      padding: 0;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(10,3,1,.92) 0%, rgba(10,3,1,.75) 50%, rgba(10,3,1,.88) 100%);
+    }
+    .header-inner {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.6rem 1.5rem 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .header-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .header-brand {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: .06em;
+      color: var(--text-strong);
+      line-height: 1;
+      text-shadow: 0 2px 8px rgba(0,0,0,.6);
+    }
+    .header-sub {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .35em;
+      color: var(--brand);
+      text-transform: uppercase;
+      margin-top: .2rem;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+    .header-sub::before,
+    .header-sub::after { content: '—'; opacity: .6; }
+    .header-divider { width: 1px; height: 2.5rem; background: var(--border-gold); opacity: .5; margin: 0 .25rem; }
+    .header-panel {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .header-panel strong { color: var(--text); display: block; font-size: .9rem; }
 
-    .mode-nav { background: var(--surface); border-bottom: 1px solid var(--border); display: flex; max-width: 900px; margin: 0 auto; padding: 0 1rem; }
-    .mode-tab { padding: .8rem 1.4rem; font-size: .88rem; font-weight: 700; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; transition: .15s; user-select: none; }
-    .mode-tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+    /* ── NAV TABS ── */
+    .mode-nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    .mode-tab {
+      padding: .75rem 1.4rem;
+      font-size: .84rem;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: .15s;
+      user-select: none;
+      letter-spacing: .02em;
+    }
+    .mode-tab.active { color: var(--brand-light); border-bottom-color: var(--brand); }
     .mode-tab:hover:not(.active) { color: var(--text); }
 
+    /* ── MAIN ── */
     main { max-width: 900px; margin: 1.75rem auto; padding: 0 1rem; }
 
-    .stepper { display: flex; margin-bottom: 1.75rem; border-radius: var(--radius); overflow: hidden; box-shadow: 0 1px 4px #0001; }
+    /* ── STEPPER ── */
+    .stepper { display: flex; margin-bottom: 1.75rem; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
     .step { flex: 1; padding: .6rem .5rem; text-align: center; font-size: .78rem; font-weight: 600; background: var(--surface); color: var(--muted); border-bottom: 3px solid var(--border); cursor: pointer; transition: .15s; }
-    .step.active { color: var(--brand); border-bottom-color: var(--brand); }
+    .step.active { color: var(--brand-light); border-bottom-color: var(--brand); background: var(--surface-2); }
     .step.done   { color: var(--success); border-bottom-color: var(--success); }
 
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.1rem; }
-    .card h2 { font-size: .95rem; font-weight: 700; color: var(--brand); margin-bottom: 1.1rem; display: flex; align-items: center; gap: .4rem; }
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.1rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,.3);
+    }
+    .card h2 {
+      font-size: .92rem;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      letter-spacing: .02em;
+    }
     .card-sub { font-size: .78rem; font-weight: 400; color: var(--muted); margin-left: .4rem; }
 
+    /* ── FORM FIELDS ── */
     .grid { display: grid; gap: .9rem; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
     .full { grid-column: 1 / -1; }
     .field { display: flex; flex-direction: column; gap: .25rem; }
-    label { font-size: .8rem; font-weight: 600; color: var(--muted); }
-    input, select, textarea { border: 1px solid var(--border); border-radius: 7px; padding: .5rem .7rem; font-size: .88rem; color: var(--text); background: var(--bg); transition: border .15s; width: 100%; }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brand); }
+    label { font-size: .78rem; font-weight: 600; color: var(--muted); letter-spacing: .02em; }
+    input, select, textarea {
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: .5rem .7rem;
+      font-size: .88rem;
+      color: var(--text-strong);
+      background: var(--surface-2);
+      transition: border .15s, box-shadow .15s;
+      width: 100%;
+      font-family: inherit;
+    }
+    input::placeholder, textarea::placeholder { color: var(--muted); opacity: .6; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(200,144,42,.15); }
     textarea { resize: vertical; min-height: 75px; }
 
+    /* ── TOGGLE PILLS ── */
     .toggle-group { display: flex; gap: .4rem; flex-wrap: wrap; }
     .toggle-group input[type=radio], .toggle-group input[type=checkbox] { display: none; }
-    .toggle-group label { cursor: pointer; padding: .35rem .8rem; border-radius: 20px; border: 1.5px solid var(--border); font-size: .8rem; font-weight: 600; color: var(--muted); transition: .15s; background: var(--surface); white-space: nowrap; }
+    .toggle-group label {
+      cursor: pointer;
+      padding: .32rem .8rem;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--muted);
+      transition: .15s;
+      background: var(--surface-2);
+      white-space: nowrap;
+    }
     .toggle-group input:checked + label { background: var(--brand); border-color: var(--brand); color: #fff; }
 
+    /* ── CHECKBOXES ── */
     .bool-grid { display: grid; gap: .65rem; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
     .bool-item { display: flex; align-items: center; gap: .45rem; }
-    .bool-item input[type=checkbox] { width: 17px; height: 17px; accent-color: var(--brand); flex-shrink: 0; }
-    .bool-item label { font-size: .86rem; font-weight: 500; color: var(--text); }
+    .bool-item input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--brand); flex-shrink: 0; }
+    .bool-item label { font-size: .85rem; font-weight: 500; color: var(--text); }
 
-    .terms-box { background: #fff8f5; border: 1.5px solid var(--brand); border-radius: var(--radius); padding: .9rem; font-size: .8rem; color: var(--muted); line-height: 1.6; margin-bottom: .9rem; }
+    /* ── TERMS ── */
+    .terms-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius);
+      padding: .9rem;
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: .9rem;
+    }
     .terms-check { display: flex; align-items: flex-start; gap: .55rem; font-size: .88rem; }
     .terms-check input { margin-top: 3px; accent-color: var(--brand); width: 17px; height: 17px; flex-shrink: 0; }
 
+    /* ── BUTTONS ── */
     .actions { display: flex; gap: .9rem; justify-content: flex-end; margin-top: 1.25rem; }
-    button { padding: .6rem 1.4rem; border-radius: 8px; font-size: .88rem; font-weight: 700; cursor: pointer; border: none; transition: .15s; }
+    button { padding: .6rem 1.4rem; border-radius: 8px; font-size: .84rem; font-weight: 700; cursor: pointer; border: none; transition: .15s; font-family: inherit; letter-spacing: .02em; }
     .btn-primary   { background: var(--brand); color: #fff; }
     .btn-primary:hover   { background: var(--brand-dark); }
-    .btn-secondary { background: var(--surface); color: var(--brand); border: 1.5px solid var(--brand); }
-    .btn-secondary:hover { background: #fdf0e8; }
+    .btn-secondary { background: transparent; color: var(--brand-light); border: 1.5px solid var(--brand); }
+    .btn-secondary:hover { background: rgba(200,144,42,.12); }
     .btn-ghost { background: transparent; color: var(--muted); border: 1.5px solid var(--border); }
-    .btn-ghost:hover { border-color: var(--brand); color: var(--brand); }
-    .btn-sm { padding: .45rem .9rem; font-size: .82rem; }
-    .btn-danger { background: #fdf0ef; color: var(--danger); border: 1.5px solid var(--danger); }
+    .btn-ghost:hover { border-color: var(--brand); color: var(--brand-light); }
+    .btn-sm { padding: .4rem .85rem; font-size: .8rem; }
+    .btn-danger { background: var(--danger-bg); color: var(--danger); border: 1.5px solid var(--danger); }
 
+    /* ── ALERTS ── */
     .alert { border-radius: var(--radius); padding: .9rem 1.1rem; font-size: .88rem; display: none; margin-bottom: 1rem; }
-    .alert.success { background: #eafaf1; border: 1px solid var(--success); color: #1e8449; }
-    .alert.error   { background: #fdf0ef; border: 1px solid var(--danger); color: var(--danger); }
+    .alert.success { background: var(--success-bg); border: 1px solid var(--success); color: #5ecf8a; }
+    .alert.error   { background: var(--danger-bg); border: 1px solid var(--danger); color: #e07070; }
 
-    .draft-banner { background: #fff3eb; border: 1.5px solid var(--brand); border-radius: var(--radius); padding: .85rem 1.1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; font-size: .88rem; }
+    /* ── DRAFT BANNER ── */
+    .draft-banner {
+      background: var(--surface-2);
+      border: 1.5px solid var(--border-gold);
+      border-radius: var(--radius);
+      padding: .85rem 1.1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      font-size: .88rem;
+      color: var(--text);
+    }
     .draft-banner-btns { display: flex; gap: .5rem; flex-shrink: 0; }
 
     .section { display: none; }
     .section.active { display: block; }
 
+    /* ── SEARCH ROW ── */
     .search-row { display: flex; gap: .5rem; align-items: flex-end; }
     .search-row input { flex: 1; }
-    .or-divider { text-align: center; color: var(--muted); font-size: .8rem; font-weight: 600; margin: .65rem 0; position: relative; }
-    .or-divider::before, .or-divider::after { content: ""; display: inline-block; width: 40%; height: 1px; background: var(--border); vertical-align: middle; margin: 0 .5rem; }
+    .or-divider {
+      text-align: center;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 600;
+      margin: .65rem 0;
+      position: relative;
+      letter-spacing: .1em;
+    }
+    .or-divider::before, .or-divider::after {
+      content: "";
+      display: inline-block;
+      width: 40%;
+      height: 1px;
+      background: var(--border);
+      vertical-align: middle;
+      margin: 0 .5rem;
+    }
 
+    /* ── INFO BOXES ── */
     .info-box { border-radius: 8px; padding: .65rem .9rem; font-size: .86rem; margin-top: .65rem; display: none; }
-    .info-box.ok  { background: #eafaf1; border: 1px solid var(--success); color: #1e8449; }
-    .info-box.err { background: #fdf0ef; border: 1px solid #e3a4a0; color: var(--danger); }
-    .info-box.inf { background: #eef4ff; border: 1px solid #90aee0; color: #2c5282; }
+    .info-box.ok  { background: var(--success-bg); border: 1px solid var(--success); color: #5ecf8a; }
+    .info-box.err { background: var(--danger-bg); border: 1px solid var(--danger); color: #e07070; }
+    .info-box.inf { background: #0A1020; border: 1px solid #3a5080; color: #80aad8; }
 
-    /* Badges */
+    /* ── BADGES ── */
     .badge { display: inline-block; padding: .18rem .6rem; border-radius: 20px; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
-    .badge-green  { background: #eafaf1; color: #1e8449; }
-    .badge-red    { background: #fdf0ef; color: var(--danger); }
-    .badge-orange { background: #fff3eb; color: var(--brand); }
-    .badge-blue   { background: #eef4ff; color: #2c5282; }
-    .badge-gray   { background: #f0ece8; color: var(--muted); }
+    .badge-green  { background: var(--success-bg); color: #5ecf8a; border: 1px solid var(--success); }
+    .badge-red    { background: var(--danger-bg); color: #e07070; border: 1px solid #6A1A14; }
+    .badge-orange { background: #1A0C02; color: var(--brand-light); border: 1px solid var(--border-gold); }
+    .badge-blue   { background: #0A1020; color: #80aad8; border: 1px solid #3a5080; }
+    .badge-gray   { background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); }
 
-    /* Animal cards (search results) */
+    /* ── ANIMAL CARDS ── */
     .animal-cards { display: flex; flex-direction: column; gap: .65rem; }
-    .animal-card { border: 1px solid var(--border); border-radius: var(--radius); padding: .9rem 1.1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; background: var(--bg); cursor: pointer; transition: border-color .15s; }
-    .animal-card:hover { border-color: var(--brand); }
-    .animal-card h3 { font-size: .92rem; font-weight: 700; margin-bottom: .2rem; }
+    .animal-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .9rem 1.1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface-2);
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .animal-card:hover { border-color: var(--brand); background: #200D05; }
+    .animal-card h3 { font-size: .92rem; font-weight: 700; margin-bottom: .2rem; color: var(--text-strong); }
     .animal-card p  { font-size: .8rem; color: var(--muted); }
 
-    /* Profile */
+    /* ── PROFILE ── */
     .profile-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.1rem; }
-    .profile-avatar { width: 58px; height: 58px; border-radius: 50%; background: var(--brand); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; }
-    .profile-header h3 { font-size: 1.2rem; font-weight: 800; }
+    .profile-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.7rem; flex-shrink: 0;
+      border: 2px solid var(--border-gold);
+    }
+    .profile-header h3 { font-size: 1.15rem; font-weight: 800; color: var(--text-strong); }
     .profile-header p  { font-size: .84rem; color: var(--muted); margin-top: .1rem; }
     .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .6rem 1.2rem; margin-bottom: 1.1rem; }
-    .pf label { font-size: .7rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; display: block; margin-bottom: .1rem; }
-    .pf span  { font-size: .88rem; font-weight: 600; }
+    .pf label { font-size: .68rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; display: block; margin-bottom: .15rem; }
+    .pf span  { font-size: .88rem; font-weight: 600; color: var(--text-strong); }
     .profile-badges { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .65rem; }
 
-    /* Visit table */
+    /* ── VISIT TABLE ── */
     .visit-count { font-size: .82rem; color: var(--muted); margin-bottom: .9rem; }
     .visits-table { width: 100%; border-collapse: collapse; font-size: .86rem; }
-    .visits-table th { background: var(--bg); text-align: left; padding: .55rem .7rem; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); border-bottom: 2px solid var(--border); }
-    .visits-table td { padding: .65rem .7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .visits-table th {
+      background: var(--surface-2);
+      text-align: left;
+      padding: .55rem .7rem;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border-gold);
+    }
+    .visits-table td { padding: .65rem .7rem; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
     .visits-table tr:last-child td { border-bottom: none; }
-    .visits-table tr:hover td { background: var(--bg); }
+    .visits-table tr:hover td { background: var(--surface-2); }
     .no-data { color: var(--muted); font-size: .88rem; padding: 1.25rem 0; text-align: center; }
 
-    /* Panel de hoy */
+    /* ── PANEL DE HOY ── */
     .hoy-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
-    .hoy-header h2 { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .hoy-header h2 { font-size: 1rem; font-weight: 700; color: var(--text-strong); }
     .hoy-header span { font-size: .82rem; color: var(--muted); }
-    .hoy-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; background: var(--surface); display: flex; align-items: flex-start; gap: 1rem; margin-bottom: .75rem; }
-    .hoy-card.warning { border-color: #e3a4a0; background: #fff8f8; }
-    .hoy-time { font-size: .82rem; font-weight: 700; color: var(--muted); white-space: nowrap; padding-top: .1rem; min-width: 42px; }
-    .hoy-info h3 { font-size: .95rem; font-weight: 700; margin-bottom: .2rem; }
+    .hoy-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      background: var(--surface-2);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: .75rem;
+      transition: border-color .15s;
+    }
+    .hoy-card:hover { border-color: var(--border-gold); }
+    .hoy-card.warning { border-color: #6A2010; background: #1A0806; }
+    .hoy-time { font-size: .82rem; font-weight: 700; color: var(--brand); white-space: nowrap; padding-top: .1rem; min-width: 42px; }
+    .hoy-info h3 { font-size: .95rem; font-weight: 700; margin-bottom: .2rem; color: var(--text-strong); }
     .hoy-info p  { font-size: .82rem; color: var(--muted); margin-bottom: .35rem; }
-    .hoy-table { font-size: .78rem; font-weight: 700; color: var(--brand); background: #fff3eb; border-radius: 6px; padding: .15rem .5rem; display: inline-block; }
+    .hoy-table {
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--brand-light);
+      background: #1A0C02;
+      border: 1px solid var(--border-gold);
+      border-radius: 6px;
+      padding: .15rem .5rem;
+      display: inline-block;
+    }
+
+    /* ── SECTION DIVIDER LABEL ── */
+    .section-label {
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--brand);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-bottom: .5rem;
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-gold); border-radius: 3px; }
   </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <h1>🐾 Dog Bar Meraki</h1>
-    <p>Panel de gestión de animales</p>
+  <div class="header-inner">
+    <div class="header-logo">
+      <div class="header-brand">MERAKI</div>
+      <div class="header-sub">Beer Company</div>
+    </div>
+    <div class="header-divider"></div>
+    <div class="header-panel">
+      <strong>Panel de gestión</strong>
+      Bar de Perros · Carabanchel
+    </div>
   </div>
 </header>
 
 <div class="mode-nav">
-  <div class="mode-tab active" id="tab-registro"  onclick="switchMode('registro')">📋 Nueva visita</div>
-  <div class="mode-tab"        id="tab-hoy"       onclick="switchMode('hoy')">🗓 Hoy</div>
-  <div class="mode-tab"        id="tab-historial" onclick="switchMode('historial')">🔎 Historial</div>
+  <div class="mode-tab active" id="tab-registro"  onclick="switchMode('registro')">Nueva visita</div>
+  <div class="mode-tab"        id="tab-hoy"       onclick="switchMode('hoy')">Hoy</div>
+  <div class="mode-tab"        id="tab-historial" onclick="switchMode('historial')">Historial</div>
 </div>
 
 <main>
   <div id="draft-banner" class="draft-banner" style="display:none">
-    <span>💾 Tienes un borrador guardado. ¿Lo recuperas?</span>
+    <span>Tienes un borrador guardado. ¿Lo recuperas?</span>
     <div class="draft-banner-btns">
       <button class="btn-primary btn-sm" onclick="restoreDraft()">Sí, recuperar</button>
       <button class="btn-ghost btn-sm"   onclick="discardDraft()">Descartar</button>
@@ -169,7 +427,7 @@
     <!-- Paso 1 -->
     <div class="section active" id="section-0">
       <div class="card">
-        <h2>🔍 ¿El propietario ya está registrado?</h2>
+        <h2>¿El propietario ya está registrado?</h2>
         <div class="search-row">
           <div class="field" style="flex:1"><label>Buscar por DNI / NIE / Pasaporte</label>
             <input id="search-doc" placeholder="Ej: 12345678A" /></div>
@@ -179,7 +437,7 @@
       </div>
 
       <div class="card" id="owner-form-card">
-        <h2>👤 Datos del propietario <span class="card-sub">— todo opcional</span></h2>
+        <h2>Datos del propietario <span class="card-sub">— todo opcional</span></h2>
         <div class="grid">
           <div class="field"><label>Nombre completo</label><input id="o-name" placeholder="Ana García López" /></div>
           <div class="field"><label>DNI / NIE / Pasaporte</label><input id="o-doc" placeholder="12345678A" /></div>
@@ -194,7 +452,7 @@
     <!-- Paso 2 -->
     <div class="section" id="section-1">
       <div class="card">
-        <h2>🔍 ¿El animal ya está registrado?</h2>
+        <h2>¿El animal ya está registrado?</h2>
         <div class="search-row">
           <div class="field" style="flex:1"><label>ID del animal</label>
             <input id="search-animal-id" type="number" placeholder="Ej: 3" /></div>
@@ -204,14 +462,14 @@
       </div>
 
       <div class="card" id="animal-form-card">
-        <h2>🐶 Datos del animal <span class="card-sub">— todo opcional</span></h2>
+        <h2>Datos del animal <span class="card-sub">— todo opcional</span></h2>
         <div class="grid">
           <div class="field"><label>Nombre</label><input id="a-name" placeholder="Rocky" /></div>
           <div class="field"><label>Especie</label>
             <div class="toggle-group">
-              <input type="radio" name="species" id="s-dog" value="perro" checked /><label for="s-dog">🐕 Perro</label>
-              <input type="radio" name="species" id="s-cat" value="gato" /><label for="s-cat">🐈 Gato</label>
-              <input type="radio" name="species" id="s-other" value="otro" /><label for="s-other">🐾 Otro</label>
+              <input type="radio" name="species" id="s-dog" value="perro" checked /><label for="s-dog">Perro</label>
+              <input type="radio" name="species" id="s-cat" value="gato" /><label for="s-cat">Gato</label>
+              <input type="radio" name="species" id="s-other" value="otro" /><label for="s-other">Otro</label>
             </div>
           </div>
           <div class="field"><label>Raza</label><input id="a-breed" placeholder="Golden Retriever" /></div>
@@ -236,7 +494,7 @@
       </div>
 
       <div class="card" id="health-form-card">
-        <h2>💉 Información sanitaria</h2>
+        <h2>Información sanitaria</h2>
         <div class="bool-grid">
           <div class="bool-item"><input type="checkbox" id="a-vaccinated" /><label for="a-vaccinated">Vacunado</label></div>
           <div class="bool-item"><input type="checkbox" id="a-rabies" /><label for="a-rabies">Rabia al día</label></div>
@@ -250,7 +508,7 @@
       </div>
 
       <div class="card" id="behavior-form-card">
-        <h2>🧠 Comportamiento</h2>
+        <h2>Comportamiento</h2>
         <div class="grid">
           <div class="field"><label>Sociabilidad</label>
             <div class="toggle-group">
@@ -279,7 +537,7 @@
     <!-- Paso 3 -->
     <div class="section" id="section-2">
       <div class="card">
-        <h2>📋 Registro de visita</h2>
+        <h2>Registro de visita</h2>
         <div class="grid">
           <div class="field"><label>Fecha</label><input id="v-date" type="date" /></div>
           <div class="field"><label>Hora</label><input id="v-time" type="time" /></div>
@@ -289,7 +547,7 @@
         </div>
       </div>
       <div class="card">
-        <h2>📝 Condiciones</h2>
+        <h2>Condiciones</h2>
         <div class="terms-box">El propietario declara que el animal está en condiciones aptas para acceder al establecimiento y se responsabiliza de su comportamiento. Dog Bar Meraki se reserva el derecho de admisión. Datos tratados conforme al RGPD.</div>
         <div class="terms-check">
           <input type="checkbox" id="v-terms" />
@@ -298,7 +556,7 @@
       </div>
       <div class="actions">
         <button class="btn-secondary" onclick="setSection(1)">← Atrás</button>
-        <button class="btn-primary" onclick="submitAll()">Registrar visita ✓</button>
+        <button class="btn-primary" onclick="submitAll()">Registrar visita</button>
       </div>
     </div>
   </div>
@@ -311,7 +569,7 @@
           <h2>Visitas de hoy</h2>
           <span id="hoy-updated"></span>
         </div>
-        <button class="btn-secondary btn-sm" onclick="loadHoy()">🔄 Actualizar</button>
+        <button class="btn-secondary btn-sm" onclick="loadHoy()">Actualizar</button>
       </div>
       <div id="hoy-content"><p class="no-data">Cargando...</p></div>
     </div>
@@ -320,7 +578,7 @@
   <!-- ══════════════ HISTORIAL ══════════════ -->
   <div id="historial-wrapper" style="display:none">
     <div class="card">
-      <h2>🔎 Buscar historial</h2>
+      <h2>Buscar historial</h2>
       <div class="search-row">
         <div class="field" style="flex:1"><label>DNI / NIE / Pasaporte del propietario</label>
           <input id="h-doc" placeholder="Ej: 12345678A" onkeydown="if(event.key==='Enter') buscarPorDoc()" /></div>
@@ -342,7 +600,7 @@
 
     <div id="h-owner-section" style="display:none">
       <div class="card">
-        <h2>👤 <span id="h-owner-title">Propietario</span></h2>
+        <h2><span id="h-owner-title">Propietario</span></h2>
         <div id="h-owner-info" style="font-size:.86rem; color:var(--muted); margin-bottom:.9rem;"></div>
         <div id="h-animal-list" class="animal-cards"></div>
       </div>
@@ -352,9 +610,9 @@
       <!-- Ficha (lectura) -->
       <div class="card" id="h-profile-card">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:.9rem;">
-          <h2 style="margin-bottom:0">🐾 Ficha del animal</h2>
+          <h2 style="margin-bottom:0">Ficha del animal</h2>
           <div style="display:flex; gap:.5rem;">
-            <button class="btn-secondary btn-sm" onclick="startEdit()">✏️ Editar</button>
+            <button class="btn-secondary btn-sm" onclick="startEdit()">Editar</button>
             <button class="btn-ghost btn-sm" onclick="volverALista()">← Volver</button>
           </div>
         </div>
@@ -364,8 +622,8 @@
       <!-- Formulario de edición (oculto por defecto) -->
       <div class="card" id="h-edit-card" style="display:none">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:.9rem;">
-          <h2 style="margin-bottom:0">✏️ Editar ficha</h2>
-          <button class="btn-ghost btn-sm" onclick="cancelEdit()">✕ Cancelar</button>
+          <h2 style="margin-bottom:0">Editar ficha</h2>
+          <button class="btn-ghost btn-sm" onclick="cancelEdit()">Cancelar</button>
         </div>
         <div id="h-edit-form"></div>
         <div class="actions" style="margin-top:1rem;">
@@ -375,7 +633,7 @@
       </div>
 
       <div class="card">
-        <h2>📅 Historial de visitas</h2>
+        <h2>Historial de visitas</h2>
         <div id="h-visits-content"></div>
       </div>
     </div>
@@ -446,12 +704,12 @@
       if (found) {
         ownerId = found.id;
         box.className = 'info-box ok'; box.style.display = 'block';
-        box.textContent = `✅ Encontrado: ${found.full_name || 'Sin nombre'} — ID ${found.id}`;
+        box.textContent = `Encontrado: ${found.full_name || 'Sin nombre'} — ID ${found.id}`;
         document.getElementById('owner-form-card').style.display = 'none';
       } else {
         ownerId = null;
         box.className = 'info-box err'; box.style.display = 'block';
-        box.textContent = '❌ No encontrado. Completa el formulario para registrarlo.';
+        box.textContent = 'No encontrado. Completa el formulario para registrarlo.';
         document.getElementById('owner-form-card').style.display = 'block';
       }
     } catch { showAlert('No se pudo conectar con la API.'); }
@@ -467,13 +725,13 @@
         const a = await res.json();
         animalId = a.id;
         box.className = 'info-box inf'; box.style.display = 'block';
-        box.textContent = `✅ ${a.name || 'Sin nombre'} (${a.species || '?'}, ${a.breed || 'raza desconocida'}) — ID ${a.id}`;
+        box.textContent = `${a.name || 'Sin nombre'} (${a.species || '?'}, ${a.breed || 'raza desconocida'}) — ID ${a.id}`;
         ['animal-form-card','health-form-card','behavior-form-card'].forEach(id =>
           document.getElementById(id).style.display = 'none');
       } else {
         animalId = null;
         box.className = 'info-box err'; box.style.display = 'block';
-        box.textContent = '❌ Animal no encontrado. Completa el formulario.';
+        box.textContent = 'Animal no encontrado. Completa el formulario.';
         ['animal-form-card','health-form-card','behavior-form-card'].forEach(id =>
           document.getElementById(id).style.display = 'block');
       }
@@ -540,7 +798,7 @@
       if (!res.ok) { const e = await res.json(); return showAlert('Error visita: ' + (e.detail || res.status)); }
 
       clearDraft();
-      showAlert('✅ Visita registrada. ¡Bienvenidos a Meraki!', 'success');
+      showAlert('Visita registrada. ¡Bienvenidos a Meraki!', 'success');
       setTimeout(resetForm, 2500);
 
     } catch { showAlert('Error de conexión. ¿Está el servidor en marcha?'); }
@@ -627,7 +885,9 @@
   async function loadHoy() {
     document.getElementById('hoy-content').innerHTML = '<p class="no-data">Cargando...</p>';
     try {
-      const visits = await (await fetch(`${API}/visits/today`)).json();
+      const _now = new Date(), _pad = n => String(n).padStart(2,'0');
+      const _localDate = `${_now.getFullYear()}-${_pad(_now.getMonth()+1)}-${_pad(_now.getDate())}`;
+      const visits = await (await fetch(`${API}/visits/today?local_date=${_localDate}`)).json();
       const now    = new Date();
       document.getElementById('hoy-updated').textContent =
         `Actualizado a las ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} · ${visits.length} visita${visits.length !== 1 ? 's' : ''}`;
@@ -643,21 +903,20 @@
         const warn = a.aggressive_with_animals || a.aggressive_with_humans;
         const time = (v.entry_time || '').slice(0, 5);
         const name = a.name || 'Sin nombre';
-        const icon = a.species === 'gato' ? '🐈' : a.species === 'otro' ? '🐾' : '🐕';
         return `
           <div class="hoy-card${warn ? ' warning' : ''}">
             <div class="hoy-time">${time}</div>
             <div class="hoy-info" style="flex:1">
-              <h3>${icon} ${name}${a.breed ? ` <span style="font-weight:400;font-size:.82rem;color:var(--muted)">· ${a.breed}</span>` : ''}</h3>
+              <h3>${name}${a.breed ? ` <span style="font-weight:400;font-size:.82rem;color:var(--muted)">· ${a.breed}</span>` : ''}</h3>
               <p>${o.full_name || 'Propietario desconocido'}${o.phone ? ' · ' + o.phone : ''}</p>
               <div style="display:flex; gap:.35rem; flex-wrap:wrap; align-items:center;">
                 ${v.table_number ? `<span class="hoy-table">Mesa ${v.table_number}</span>` : ''}
-                ${a.aggressive_with_animals ? '<span class="badge badge-red">⚠ Animales</span>' : ''}
-                ${a.aggressive_with_humans  ? '<span class="badge badge-red">⚠ Personas</span>' : ''}
+                ${a.aggressive_with_animals ? '<span class="badge badge-red">Animales</span>' : ''}
+                ${a.aggressive_with_humans  ? '<span class="badge badge-red">Personas</span>' : ''}
                 ${a.sociability_level === 'alto' ? '<span class="badge badge-green">Sociable</span>' : ''}
                 ${a.sociability_level === 'bajo' ? '<span class="badge badge-orange">Poca sociabilidad</span>' : ''}
               </div>
-              ${v.staff_notes ? `<p style="margin-top:.35rem; font-size:.8rem; color:var(--muted)">📝 ${v.staff_notes}</p>` : ''}
+              ${v.staff_notes ? `<p style="margin-top:.35rem; font-size:.8rem; color:var(--muted)">${v.staff_notes}</p>` : ''}
             </div>
             <button class="btn-ghost btn-sm" onclick="irAHistorialAnimal(${a.id})">Ver ficha</button>
           </div>`;
@@ -744,7 +1003,7 @@
     listEl.innerHTML = animals.map(a => `
       <div class="animal-card" onclick="verHistorialAnimal(${a.id})">
         <div>
-          <h3>${a.species === 'gato' ? '🐈' : a.species === 'otro' ? '🐾' : '🐕'} ${a.name || 'Sin nombre'}</h3>
+          <h3>${a.name || 'Sin nombre'}</h3>
           <p>${[a.species, a.breed, a.color, a.weight_kg ? a.weight_kg + ' kg' : null].filter(Boolean).join(' · ')}</p>
         </div>
         <button class="btn-secondary btn-sm">Ver historial →</button>
@@ -766,14 +1025,14 @@
 
   // ── Render profile ─────────────────────────────────────────────
 
-  function speciesIcon(s) { return s === 'gato' ? '🐈' : s === 'otro' ? '🐾' : '🐕'; }
+  function speciesIcon(s) { return ''; }
   function fmt(d) { return d ? new Date(d + 'T00:00:00').toLocaleDateString('es-ES') : '—'; }
 
   function renderProfile(a) {
     const o = a.owner || {};
     document.getElementById('h-profile-content').innerHTML = `
       <div class="profile-header">
-        <div class="profile-avatar">${speciesIcon(a.species)}</div>
+        <div class="profile-avatar" style="font-size:1.4rem;letter-spacing:0">${a.species === 'gato' ? 'G' : 'P'}</div>
         <div>
           <h3>${a.name || 'Sin nombre'}</h3>
           <p>${[a.species, a.breed, a.sex && a.sex !== 'desconocido' ? a.sex : null, a.size].filter(Boolean).join(' · ')}</p>
@@ -792,12 +1051,12 @@
       </div>
       <div class="profile-badges">
         ${a.sociability_level ? `<span class="badge ${a.sociability_level === 'alto' ? 'badge-green' : a.sociability_level === 'bajo' ? 'badge-red' : 'badge-orange'}">Sociabilidad: ${a.sociability_level}</span>` : ''}
-        ${a.aggressive_with_animals ? '<span class="badge badge-red">⚠ Agresivo con animales</span>' : ''}
-        ${a.aggressive_with_humans  ? '<span class="badge badge-red">⚠ Agresivo con personas</span>' : ''}
+        ${a.aggressive_with_animals ? '<span class="badge badge-red">Agresivo con animales</span>' : ''}
+        ${a.aggressive_with_humans  ? '<span class="badge badge-red">Agresivo con personas</span>' : ''}
         ${!a.is_vaccinated          ? '<span class="badge badge-orange">Sin vacunar</span>' : ''}
         ${!a.rabies_up_to_date      ? '<span class="badge badge-orange">Rabia no al día</span>' : ''}
       </div>
-      ${a.behavior_notes ? `<p style="margin-top:.9rem; font-size:.86rem; background:var(--bg); padding:.7rem .9rem; border-radius:8px; color:var(--muted);">📝 ${a.behavior_notes}</p>` : ''}`;
+      ${a.behavior_notes ? `<p style="margin-top:.9rem; font-size:.86rem; background:var(--bg); padding:.7rem .9rem; border-radius:8px; color:var(--muted);">${a.behavior_notes}</p>` : ''}`;
   }
 
   function renderVisits(visits) {
@@ -918,7 +1177,7 @@
       currentAnimal = updated;
       renderProfile(updated);
       cancelEdit();
-      showAlert('✅ Ficha actualizada correctamente.', 'success');
+      showAlert('Ficha actualizada correctamente.', 'success');
     } catch { showAlert('Error al guardar los cambios.'); }
   }
 
